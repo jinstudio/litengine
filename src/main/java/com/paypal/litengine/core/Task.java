@@ -4,9 +4,9 @@ public class Task {
 
     private TaskEnum type;
 
-    private Object input;
+    private Tuple input;
 
-    private Object output;
+    private Values output;
 
     private TaskProcessor processor = new SpareTaskProcessor();
 
@@ -18,21 +18,27 @@ public class Task {
         this.type = type;
     }
 
-    public Object getInput() {
+    public Tuple getInput() {
         return input;
     }
 
-    public Task setInput(Object input) {
+    public Task setInput(Tuple input) {
         if(this.input == null)
             this.input = input;
         return this;
     }
+    
+    public Task setInput(Object input) {
+        if(this.input == null)
+            this.input = new TupleImpl(Fields.DEFAULT,new Values(input));
+        return this;
+    }
 
-    public Object getOutput() {
+    public Values getOutput() {
         return output;
     }
 
-    public void setOutput(Object output) {
+    public void setOutput(Values output) {
         this.output = output;
     }
 

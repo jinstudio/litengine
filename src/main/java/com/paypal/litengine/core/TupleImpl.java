@@ -1,11 +1,25 @@
 package com.paypal.litengine.core;
 
-public class TupleImpl implements Tuple {
+import java.util.Iterator;
+import java.util.List;
 
-    @Override
+
+public class TupleImpl implements Tuple {
+	
+	private List<Object> _values;
+	
+	private Fields _fields;
+	
+    public TupleImpl(Fields _fields,List<Object> _values) {
+		super();
+		this._values = _values;
+		this._fields = _fields;
+	}
+
+	@Override
     public boolean contains(String field) {
         // TODO Auto-generated method stub
-        return false;
+        return _fields.contains(field);
     }
 
     @Override
@@ -17,13 +31,13 @@ public class TupleImpl implements Tuple {
     @Override
     public Object getValue(int i) {
         // TODO Auto-generated method stub
-        return null;
+        return _values.get(i);
     }
 
     @Override
     public Object getValueByField(String field) {
         // TODO Auto-generated method stub
-        return null;
+        return _values.get(_fields.fieldIndex(field));
     }
 
     @Override
@@ -31,5 +45,11 @@ public class TupleImpl implements Tuple {
         // TODO Auto-generated method stub
         return 0;
     }
+
+	@Override
+	public Iterator<String> iterator() {
+		// TODO Auto-generated method stub
+		return _fields.iterator();
+	}
 
 }

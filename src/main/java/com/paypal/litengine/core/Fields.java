@@ -1,6 +1,5 @@
 package com.paypal.litengine.core;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class Fields implements Iterable<String>{
+	
+	public static final Fields DEFAULT= new Fields("default");
 
     private List<String> _fields;
     private Map<String, Integer> _index = new HashMap<String, Integer>();
@@ -27,6 +28,18 @@ public class Fields implements Iterable<String>{
             _fields.add(field);
         }
         index();
+    }
+    
+    public void add(Fields fields){
+    	int size=_index.size();
+    	for (String field : fields) {
+            if (_fields.contains(field))
+                throw new IllegalArgumentException(
+                    String.format("duplicate field '%s'", field)
+                );
+            _fields.add(field);
+            _index.put(field, size++);
+        }
     }
     
     public List<Object> select(Fields selector, List<Object> tuple) {

@@ -1,17 +1,26 @@
 package com.paypal.litengine.demo;
 
+import com.paypal.litengine.core.Fields;
+import com.paypal.litengine.core.OutputFieldsDeclarer;
 import com.paypal.litengine.core.TaskProcessor;
+import com.paypal.litengine.core.Tuple;
+import com.paypal.litengine.core.Values;
 
 public class AddressNormTaskProcessor1 extends TaskProcessor {
 
     @Override
-    public Object doProcess(Object input) {
+    public Values doProcess(Tuple input) {
         // TODO Auto-generated method stub
-        SetTransactionContextRequest request=(SetTransactionContextRequest) input;
+        SetTransactionContextRequest request=(SetTransactionContextRequest) input.getValue(0);
         System.out.println(request);
         System.out.println("do address normalizations");
         request.setAddress1("normizalied address");
-        return request;
+        return new Values(request);
     }
+
+	@Override
+	public void declareOutputFields(OutputFieldsDeclarer declarer) {
+		declarer.declare(new Fields("address1"));
+	}
 
 }

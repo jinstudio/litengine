@@ -3,8 +3,7 @@ package com.paypal.litengine.core;
 public class SpareTaskProcessor extends TaskProcessor {
 
     @Override
-    public  Object doProcess(Object input) {
-        // TODO Auto-generated method stub
+    public  Values doProcess(Tuple input) {
         return null;
     }
     
@@ -12,5 +11,10 @@ public class SpareTaskProcessor extends TaskProcessor {
     public void process() {
        
     }
+
+	@Override
+	public void declareOutputFields(OutputFieldsDeclarer declarer) {
+		
+	}
 
 }

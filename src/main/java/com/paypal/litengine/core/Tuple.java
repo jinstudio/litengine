@@ -1,6 +1,6 @@
 package com.paypal.litengine.core;
 
-public interface Tuple {
+public interface Tuple extends Iterable<String>{
     /**
      * Returns the number of fields in this tuple.
      */

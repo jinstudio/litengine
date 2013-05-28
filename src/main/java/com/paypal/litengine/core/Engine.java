@@ -16,22 +16,31 @@ public class Engine {
     public void execute(Assemble assemble) throws InterruptedException, ExecutionException{
         
         Task start=assemble.getStartPoint();
-        Object obj=null;
+        Tuple obj=null;
         if(start!=null&&!(start.getProcessor() instanceof SpareTaskProcessor)){
-            start.getProcessor().process();
-            obj= start.getOutput();
+        	Processor processor= start.getProcessor();
+        	OutputFieldsDeclarer declarer= new OutputFieldsDeclarerImpl();
+        	processor.declareOutputFields(declarer);
+        	Fields fields=declarer.getFieldsDeclaration();
+        	processor.process();
+            Values values= start.getOutput();
+            obj= new TupleImpl(fields,values);
         } 
        
         List<Task> tasks=assemble.getTasks();
         
         List<Future> results= new ArrayList<Future>();
+        final OutputFieldsDeclarer declarer= new OutputFieldsDeclarerImpl();
+        Fields fields=new Fields();
         for(final Task task: tasks){
             task.setInput(obj);
             Future future=processorExecutor.submit(new Callable(){
 
                 @Override
                 public Object call() throws Exception {
-                    task.getProcessor().process();
+                	Processor processor=task.getProcessor();
+                	processor.process();
+                	processor.declareOutputFields(declarer);
                     return task.getOutput();
                 }
             });
@@ -39,14 +48,14 @@ public class Engine {
             results.add(future);
         }
         
-        List<Object> outputs= new ArrayList<Object>();
+        Values outputs= new Values();
         System.out.println(results.size());
         if(results.size()>0){
             for(Future<?> future:results){
                 outputs.add(future.get());
             }
         }
-        assemble.getEndPoint().setInput(outputs);
+        assemble.getEndPoint().setInput(new TupleImpl(declarer.getFieldsDeclaration(),outputs));
         assemble.getEndPoint().getProcessor().process();
         
     }

@@ -9,7 +9,7 @@ public abstract class TaskProcessor implements Processor {
        task.setOutput( doProcess(task.getInput()));
     }
     
-    public abstract Object doProcess(Object input);
+    public abstract Values doProcess(Tuple input);
 
     public Task getTask() {
         return task;
