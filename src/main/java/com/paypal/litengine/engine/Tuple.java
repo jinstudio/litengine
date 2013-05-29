@@ -22,5 +22,5 @@ public interface Tuple extends Iterable<String>{
     public Object getValue(int i);
     
     public Object getValueByField(String field);
-
+    
 }

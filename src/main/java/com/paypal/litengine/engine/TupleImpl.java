@@ -6,20 +6,25 @@ import java.util.List;
 
 public class TupleImpl implements Tuple {
 	
-	private List<Object> _values;
+	private List<Object> values;
 	
-	private Fields _fields;
+	private Fields fields;
+	
+	public TupleImpl(Fields _fields) {
+		super();
+		this.fields = _fields;
+	}
 	
     public TupleImpl(Fields _fields,List<Object> _values) {
 		super();
-		this._values = _values;
-		this._fields = _fields;
+		this.values = _values;
+		this.fields = _fields;
 	}
 
 	@Override
     public boolean contains(String field) {
         // TODO Auto-generated method stub
-        return _fields.contains(field);
+        return fields.contains(field);
     }
 
     @Override
@@ -31,13 +36,13 @@ public class TupleImpl implements Tuple {
     @Override
     public Object getValue(int i) {
         // TODO Auto-generated method stub
-        return _values.get(i);
+        return values.get(i);
     }
 
     @Override
     public Object getValueByField(String field) {
         // TODO Auto-generated method stub
-        return _values.get(_fields.fieldIndex(field));
+        return values.get(fields.fieldIndex(field));
     }
 
     @Override
@@ -49,7 +54,7 @@ public class TupleImpl implements Tuple {
 	@Override
 	public Iterator<String> iterator() {
 		// TODO Auto-generated method stub
-		return _fields.iterator();
+		return fields.iterator();
 	}
 
 }

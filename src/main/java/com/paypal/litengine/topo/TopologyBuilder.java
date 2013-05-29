@@ -18,6 +18,7 @@ public class TopologyBuilder {
         }
         else {
             group= new Group(name);
+            group.addTask(task);
             topology.add(group);
         }
         

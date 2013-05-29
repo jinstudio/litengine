@@ -2,6 +2,8 @@ package com.paypal.litengine.topo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.paypal.litengine.engine.Task;
 
@@ -12,6 +14,8 @@ public class Group {
     private List<Task> tasks = new ArrayList<Task>();
     
     private Topology topology;
+    
+    private Lock lock = new ReentrantLock();
 
     //private List<Group> _groups= new ArrayList<Group>();
     
@@ -91,6 +95,14 @@ public class Group {
         } else if(!this.name.equals(other.name))
             return false;
         return true;
+    }
+    
+    public void lock(){
+    	this.lock.lock();
+    }
+    
+    public void unlock(){
+    	this.lock.unlock();
     }
     
 }
