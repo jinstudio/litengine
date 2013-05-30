@@ -12,9 +12,19 @@ public abstract class TaskProcessor implements Processor {
        task.setOutput( doProcess(task.getInput()));
     }
     
+    @Override
+	public void declareOutputFields(OutputFieldsDeclarer declarer) {
+    	Fields fields=this.defineOutput();
+    	declarer.declare(fields);
+    	task.setOutputFields(fields);
+	}
+    
     public abstract Values doProcess(Tuple input);
+    
+    public abstract Fields defineOutput();
+    
 
-    public Task getTask() {
+	public Task getTask() {
         return task;
     }
 

@@ -3,6 +3,7 @@ package com.paypal.litengine.demo.simple;
 import java.util.concurrent.ExecutionException;
 
 import com.paypal.litengine.Engine;
+import com.paypal.litengine.Tuple;
 import com.paypal.litengine.engine.Assemble;
 import com.paypal.litengine.engine.SimpleEngine;
 import com.paypal.litengine.engine.Task;
@@ -27,8 +28,11 @@ public class SimpleDemo {
         
         Engine<Assemble> engine= new SimpleEngine();
         //engine.execute(ass);
-        engine.trigger(ass, null);
-        ass.getEndPoint().getOutput();
+        Tuple output=engine.trigger(ass, null);
+        System.out.println(output);
+        for(Object o:output)
+        	System.out.println(o);
+        
     }
 
 }

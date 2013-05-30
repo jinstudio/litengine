@@ -25,38 +25,64 @@ public class TupleImpl implements Tuple {
 
 	@Override
     public boolean contains(String field) {
-        // TODO Auto-generated method stub
         return fields.contains(field);
     }
 
     @Override
     public int fieldIndex(String field) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
     public Object getValue(int i) {
-        // TODO Auto-generated method stub
         return values.get(i);
     }
 
     @Override
     public Object getValueByField(String field) {
-        // TODO Auto-generated method stub
         return values.get(fields.fieldIndex(field));
     }
 
     @Override
     public int size() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
 	@Override
 	public Iterator<String> iterator() {
-		// TODO Auto-generated method stub
 		return fields.iterator();
 	}
+
+	@Override
+	public void add(Tuple tuple) {
+		for(String str: tuple){
+			fields.add(str);
+	        values.add(tuple.getValueByField(str));
+		}
+           
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb= new StringBuilder();
+		for(String str: this)
+			sb.append(str).append("=").append(this.getValueByField(str)).append(";");
+		return sb.toString();
+	}
+
+	@Override
+	public void add(Tuple tuple, String prefix) {
+		
+		for(String str: tuple){
+			if(fields.contains(str))
+				fields.add(prefix+str);
+			else
+				fields.add(str);
+	        values.add(tuple.getValueByField(str));
+		}
+		
+	}
+	
+	
 
 }

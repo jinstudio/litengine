@@ -17,8 +17,6 @@ public class Group {
     
     private Lock lock = new ReentrantLock();
 
-    //private List<Group> _groups= new ArrayList<Group>();
-    
     private List<Group> parent=new ArrayList<Group>();
     
     public Group(String name) {
@@ -61,6 +59,7 @@ public class Group {
     public void addParent(Group parent){
         if(!this.parent.contains(parent)) {
             this.parent.add(parent);
+            this.topology.addNonleaf(parent);
         }
     }
     

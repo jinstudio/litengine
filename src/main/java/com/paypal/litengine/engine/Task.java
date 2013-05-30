@@ -10,6 +10,8 @@ public class Task {
     private Tuple input;
 
     private Values output;
+    
+    private Fields outputFields;
 
     private TaskProcessor processor = new SpareTaskProcessor();
 
@@ -36,16 +38,24 @@ public class Task {
             this.input = new TupleImpl(Fields.DEFAULT,new Values(input));
         return this;
     }
-
+    
     public Values getOutput() {
         return output;
     }
-
+    
     public void setOutput(Values output) {
         this.output = output;
     }
+    
+    public Fields getOutputFields() {
+		return outputFields;
+	}
 
-    public Processor getProcessor() {
+	public void setOutputFields(Fields outputFields) {
+		this.outputFields = outputFields;
+	}
+
+	public Processor getProcessor() {
         return processor;
     }
 

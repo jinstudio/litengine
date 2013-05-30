@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.paypal.litengine.exception.DuplicateFieldException;
+
 public class Fields implements Iterable<String>{
 	
 	public static final Fields DEFAULT= new Fields("default");
@@ -40,6 +42,14 @@ public class Fields implements Iterable<String>{
             _fields.add(field);
             _index.put(field, size++);
         }
+    }
+    
+    public void add(String field){
+    	int size=_index.size();
+        if (_fields.contains(field))
+            throw new DuplicateFieldException(field);
+        _fields.add(field);
+        _index.put(field, size++);
     }
     
     public List<Object> select(Fields selector, List<Object> tuple) {

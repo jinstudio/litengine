@@ -2,7 +2,6 @@ package com.paypal.litengine.demo.simple;
 
 import com.paypal.litengine.Tuple;
 import com.paypal.litengine.engine.Fields;
-import com.paypal.litengine.engine.OutputFieldsDeclarer;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.Values;
 
@@ -18,8 +17,9 @@ public class AddressNormTaskProcessor2 extends TaskProcessor {
     }
 
 	@Override
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declare(new Fields("address2"));
+	public Fields defineOutput() {
+		// TODO Auto-generated method stub
+		return new Fields("address2");
 	}
 
 }

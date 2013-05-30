@@ -69,6 +69,8 @@ public class SimpleEngine extends BaseEngine<Assemble>{
         }
         assemble.getEndPoint().setInput(new TupleImpl(declarer.getFieldsDeclaration(),outputs));
         assemble.getEndPoint().getProcessor().process();
+        OutputFieldsDeclarer declarer4end= new OutputFieldsDeclarerImpl();
+        assemble.getEndPoint().getProcessor().declareOutputFields(declarer4end);
         
     }
 }

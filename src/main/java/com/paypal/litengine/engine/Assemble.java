@@ -3,10 +3,10 @@ package com.paypal.litengine.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.paypal.litengine.Context;
+import com.paypal.litengine.BaseContext;
 import com.paypal.litengine.Tuple;
 
-public class Assemble implements Context{
+public class Assemble extends BaseContext{
 
     private Task start;
     private Task end;
@@ -42,4 +42,9 @@ public class Assemble implements Context{
     public void initTriggerSource(Tuple input) {
         start.setInput(input);
     }
+
+	@Override
+	public Tuple getFinalOutput() {
+		return new TupleImpl(end.getOutputFields(),end.getOutput());
+	}
 }

@@ -1,7 +1,7 @@
 package com.paypal.litengine.demo.simple;
 
 import com.paypal.litengine.Tuple;
-import com.paypal.litengine.engine.OutputFieldsDeclarer;
+import com.paypal.litengine.engine.Fields;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.Values;
 
@@ -15,9 +15,8 @@ public class TransformTaskProcessor extends TaskProcessor {
     }
 
 	@Override
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		// TODO Auto-generated method stub
-		
+	public Fields defineOutput() {
+		return null;
 	}
 
 }

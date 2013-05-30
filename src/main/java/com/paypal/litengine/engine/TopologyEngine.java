@@ -24,9 +24,11 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
         List<Group> canRuns = context.getCanRunGroups();
         if(Status.READY == context.getStatus())
             context.setStatus(Status.RUNNING);
-        // Map<Group,List<Future>> results = new HashMap<Group,List<Future>>();
-        if(canRuns.size() == 0)
+        //execution finished
+        if(canRuns.size() == 0){
+        	context.setStatus(Status.DONE);
             return;
+        }
         for(Group group: canRuns) {
             group.lock();
             List<Task> tasks = group.getTasks();
@@ -59,7 +61,7 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
 
             List<Group> kids = context.getChildren(group);
             for(Group kid: kids) {
-                context.addInputMapping(kid, new TupleImpl(declarer.getFieldsDeclaration(), outputs));
+                context.addInputMapping(group,kid, new TupleImpl(declarer.getFieldsDeclaration(), outputs));
             }
         }
         // Values outputs = new Values();

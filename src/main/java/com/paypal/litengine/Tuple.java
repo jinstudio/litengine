@@ -23,4 +23,8 @@ public interface Tuple extends Iterable<String>{
     
     public Object getValueByField(String field);
     
+    public void add(Tuple tuple);
+    
+    public void add(Tuple tuple,String prefix);
+    
 }

@@ -1,6 +1,8 @@
 package com.paypal.litengine;
 
-public interface Context {
+public interface Context<I,O> {
  
-     void initTriggerSource(Tuple input);
+     void initTriggerSource(I input);
+     
+     O getFinalOutput();
 }

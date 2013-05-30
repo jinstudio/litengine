@@ -15,8 +15,9 @@ public class SpareTaskProcessor extends TaskProcessor {
     }
 
 	@Override
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		
+	public Fields defineOutput() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

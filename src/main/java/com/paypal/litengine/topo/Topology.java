@@ -12,6 +12,8 @@ public class Topology {
     
     private List<Group> normal=new ArrayList<Group>();
     
+    private List<Group> nonleaf=new ArrayList<Group>();
+    
     public boolean contains(Group group){
         return this.all.contains(group);
     }
@@ -39,6 +41,10 @@ public class Topology {
         }
     }
     
+    protected void addNonleaf(Group group){
+    	this.nonleaf.add(group);
+    }
+    
     protected Topology init(){
         for(Group group: all){
             if(!group.hasParent()){
@@ -50,12 +56,20 @@ public class Topology {
         return this;
     }
     
+    public List<Group> getAll(){
+    	return Collections.unmodifiableList(this.all);
+    }
+    
     public List<Group> getStarter(){
         return Collections.unmodifiableList(this.starter);
     }
     public List<Group> getNormal(){
        
-        return Collections.unmodifiableList(normal);
+        return Collections.unmodifiableList(this.normal);
+    }
+    
+    public List<Group> getNonleaf(){
+    	return Collections.unmodifiableList(this.nonleaf);
     }
     
 }
