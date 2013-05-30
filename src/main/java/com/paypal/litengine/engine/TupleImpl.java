@@ -3,6 +3,8 @@ package com.paypal.litengine.engine;
 import java.util.Iterator;
 import java.util.List;
 
+import com.paypal.litengine.Tuple;
+
 
 public class TupleImpl implements Tuple {
 	

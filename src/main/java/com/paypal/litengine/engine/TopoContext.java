@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.paypal.litengine.Context;
+import com.paypal.litengine.Tuple;
 import com.paypal.litengine.topo.Group;
 import com.paypal.litengine.topo.Topology;
 
-public class Context {
+public class TopoContext implements Context{
     
     Status status=Status.READY;
     Topology topology;
@@ -16,7 +18,7 @@ public class Context {
     private Map<Group,List<Task>> doneGroupsMapping=new HashMap<Group,List<Task>>();
     private Map<Group,Tuple> inputMapping= new HashMap<Group,Tuple>();
     
-    public Context(Topology topology) {
+    public TopoContext(Topology topology) {
         super();
         this.topology = topology;
     }
@@ -96,6 +98,19 @@ public class Context {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    @Override
+    public void initTriggerSource(Tuple input) {
+       List<Group> starters= this.topology.getStarter();
+       for(Group group: starters){
+           
+          List<Task> tasks= group.getTasks();
+          for(Task task:tasks){
+              task.setInput(input);
+          }
+           
+       }
     }
 
 }

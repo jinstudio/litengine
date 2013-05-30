@@ -1,4 +1,4 @@
-package com.paypal.litengine.core;
+package com.paypal.litengine;
 
 public interface Tuple extends Iterable<String>{
     /**
@@ -22,5 +22,5 @@ public interface Tuple extends Iterable<String>{
     public Object getValue(int i);
     
     public Object getValueByField(String field);
-
+    
 }

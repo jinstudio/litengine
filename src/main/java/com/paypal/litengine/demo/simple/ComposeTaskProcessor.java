@@ -2,10 +2,10 @@ package com.paypal.litengine.demo.simple;
 
 import java.util.List;
 
+import com.paypal.litengine.Tuple;
 import com.paypal.litengine.engine.Fields;
 import com.paypal.litengine.engine.OutputFieldsDeclarer;
 import com.paypal.litengine.engine.TaskProcessor;
-import com.paypal.litengine.engine.Tuple;
 import com.paypal.litengine.engine.Values;
 
 public class ComposeTaskProcessor extends TaskProcessor {

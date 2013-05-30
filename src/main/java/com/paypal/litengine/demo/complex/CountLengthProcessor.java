@@ -6,7 +6,7 @@ import com.paypal.litengine.engine.OutputFieldsDeclarer;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.Values;
 
-public class PassdownProcessor extends TaskProcessor {
+public class CountLengthProcessor extends TaskProcessor {
 
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
@@ -15,13 +15,13 @@ public class PassdownProcessor extends TaskProcessor {
 
 	@Override
 	public Values doProcess(Tuple input) {
-	    
-		System.out.println(this.getClass());
-		System.out.println(input.getValue(0));
-		if (input.getValue(0) instanceof Values)
-			return (Values) input.getValue(0);
-		else
-			return new Values(input.getValue(0));
+		int len=0;
+		Values values=(Values)input.getValue(0);
+		for(Object str:values){
+		   len+=((String)str).length();
+		}
+		 System.out.print("total length is:"+len);
+		return new Values(len);
 	}
 
 }

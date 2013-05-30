@@ -9,13 +9,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.paypal.litengine.BaseEngine;
 import com.paypal.litengine.Processor;
+import com.paypal.litengine.Tuple;
 
-public class Engine {
+public class SimpleEngine extends BaseEngine<Assemble>{
     
     ThreadPoolExecutor processorExecutor=new ThreadPoolExecutor(100,100,100,TimeUnit.MILLISECONDS,new LinkedBlockingQueue<Runnable>());
-    
-    public void execute(Assemble assemble) throws InterruptedException, ExecutionException{
+    @Override
+    public void execute(Assemble assemble) {
         
         Task start=assemble.getStartPoint();
         Tuple obj=null;
@@ -54,7 +56,15 @@ public class Engine {
         System.out.println(results.size());
         if(results.size()>0){
             for(Future<?> future:results){
-                outputs.add(future.get());
+                try {
+                    outputs.add(future.get());
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
         assemble.getEndPoint().setInput(new TupleImpl(declarer.getFieldsDeclaration(),outputs));

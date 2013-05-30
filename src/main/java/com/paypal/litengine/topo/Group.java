@@ -46,7 +46,7 @@ public class Group {
         return parent;
     }
 
-    public void wait(String name){
+    public Group wait(String name){
         Group group=topology.get(name);
         if(group !=null){
             this.addParent(group);
@@ -55,6 +55,7 @@ public class Group {
             Group parent= new Group(name);//create parent first in case parent not exists yet, later to update
             this.addParent(parent);
         }
+        return this;
     }
     
     public void addParent(Group parent){

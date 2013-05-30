@@ -2,11 +2,12 @@ package com.paypal.litengine.demo.simple;
 
 import java.util.concurrent.ExecutionException;
 
+import com.paypal.litengine.Engine;
 import com.paypal.litengine.engine.Assemble;
-import com.paypal.litengine.engine.Engine;
+import com.paypal.litengine.engine.SimpleEngine;
 import com.paypal.litengine.engine.Task;
 
-public class Main {
+public class SimpleDemo {
 
     /**
      * @param args
@@ -24,8 +25,9 @@ public class Main {
         ass.addWorkingTask(new Task().setInput(request).setProcessor(new AddressNormTaskProcessor2()));
         ass.setEndPoint(new Task().setProcessor(new ComposeTaskProcessor()));
         
-        Engine engine= new Engine();
-        engine.execute(ass);
+        Engine<Assemble> engine= new SimpleEngine();
+        //engine.execute(ass);
+        engine.trigger(ass, null);
         ass.getEndPoint().getOutput();
     }
 

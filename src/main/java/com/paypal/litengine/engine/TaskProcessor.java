@@ -1,6 +1,7 @@
 package com.paypal.litengine.engine;
 
 import com.paypal.litengine.Processor;
+import com.paypal.litengine.Tuple;
 
 public abstract class TaskProcessor implements Processor {
 

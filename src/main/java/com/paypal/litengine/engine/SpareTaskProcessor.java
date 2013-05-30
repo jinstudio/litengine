@@ -1,5 +1,7 @@
 package com.paypal.litengine.engine;
 
+import com.paypal.litengine.Tuple;
+
 public class SpareTaskProcessor extends TaskProcessor {
 
     @Override
