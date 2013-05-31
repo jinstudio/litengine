@@ -5,10 +5,11 @@ for complex case, you can use <a href="https://github.com/jinstudio/litengine/bl
 follow <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/demo/simple/SimpleDemo.java">SimpleDemo</a> to check how to play with simple engine,<br>
 follow <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/demo/complex/WordsCountDemo.java">WordsCountDemo</a> to check how to play with complex engine,
 and the WordsCount workflow like this:
-group 2, group3 and group4 will running in parallel.<pre>
-                       +-----------+                                       
-                       |   root    |                                    
-                       +----+------+                             
+group 2, group3 and group4 will running in parallel.
+<pre>
+                       +-----------+
+                       |   root    |
+                       +----+------+
                             |
                             |
                        +----+------+
