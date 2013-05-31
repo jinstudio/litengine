@@ -39,7 +39,7 @@ public class TopoContext extends BaseContext{
         return doneGroups.containsAll(groups);
      }
     
-    public synchronized void markDone(Group group,Task task){
+    public void markDone(Group group,Task task){
         List<Task> tasks=doneGroupsMapping.get(group);
         if(tasks==null){
             List<Task> lists= new ArrayList<Task>(); 
@@ -71,7 +71,7 @@ public class TopoContext extends BaseContext{
         return inputMapping.get(group);
     }
     
-    public synchronized void addInputMapping(Group parent,Group group,Tuple tuple){
+    public void addInputMapping(Group parent,Group group,Tuple tuple){
     	Tuple tup=inputMapping.get(group);
     	if(tup!=null){
     		tup.add(tuple,parent.getName());
@@ -80,32 +80,27 @@ public class TopoContext extends BaseContext{
     		inputMapping.put(group, tuple);
     }
     
-    public synchronized void addInputMapping(Group group,Fields fields){
+    public void addInputMapping(Group group,Fields fields){
         inputMapping.put(group, new TupleImpl(fields));
     }
     
-    public synchronized List<Group> getCanRunGroups(){
-       // System.out.println("status:"+status);
-       // System.out.println("doneGroups:"+doneGroups);
-      //  System.out.println("scheduledGroups:"+scheduledGroups);
+    public List<Group> getCanRunGroups(){
         List<Group> canRuns= new ArrayList<Group>();
         if(Status.READY==status)
             return topology.getStarter();
         else if(Status.RUNNING==status){
             List<Group> normal=topology.getNormal();
             for(Group group: normal){
-            //    System.out.println("getCanRunGroups:"+group);
                 if(!isDone(group)&&isDone(group.getParent())&&!scheduledGroups.contains(group)){
                     canRuns.add(group);
                 }
             }
         }
-     //   System.out.println("canRuns:"+canRuns);
         scheduledGroups.addAll(canRuns);
         return canRuns;
     }
 
-    public synchronized boolean canRun(Group group){
+    public boolean canRun(Group group){
     	return getCanRunGroups().contains(group);
     }
     
@@ -113,16 +108,13 @@ public class TopoContext extends BaseContext{
         return status;
     }
 
-    public synchronized void setStatus(Status status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
     
-    public synchronized boolean isDone(){
+    public boolean isDone(){
         if(Status.DONE==this.status)
             return true;
-        System.out.println("this.getCanRunGroups:"+this.getCanRunGroups());
-        System.out.println("this.topology.getAll:"+this.topology.getAll().size());
-        System.out.println("this.doneGroups:"+this.doneGroups.size());
         return this.getCanRunGroups().size()==0&&(this.doneGroups.size()==this.topology.getAll().size());
     }
 

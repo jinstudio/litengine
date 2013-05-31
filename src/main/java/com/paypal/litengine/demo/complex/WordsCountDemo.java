@@ -9,6 +9,8 @@ import com.paypal.litengine.engine.TopoContext;
 import com.paypal.litengine.engine.TopologyEngine;
 import com.paypal.litengine.topo.Topology;
 import com.paypal.litengine.topo.TopologyBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  *  this demo create a workflow like this
  *  <pre>
@@ -35,10 +37,10 @@ import com.paypal.litengine.topo.TopologyBuilder;
  *
  */
 public class WordsCountDemo {
-
+	
+	static final Logger logger = LoggerFactory.getLogger(WordsCountDemo.class);
+	
     /**
-     * 
-     
      * @param args
      * @throws ExecutionException
      * @throws InterruptedException
@@ -54,10 +56,15 @@ public class WordsCountDemo {
         Topology topo = builder.createTopology();
         Engine<TopoContext> engine = new TopologyEngine();
         Tuple output=engine.trigger(new TopoContext(topo), null);
-        System.out.println("##############################end##########################");
-        System.out.println(output);
+        logger.debug("##############################end##########################");
         for(String o:output) 
-        	System.out.println(o+":"+output.getValueByField(o));
+        	logger.debug(o+":"+output.getValueByField(o));
+        
+        //you can execute the flow twice with the same result!
+        output=engine.trigger(new TopoContext(topo), null);
+        logger.debug("##############################end##########################");
+        for(String o:output) 
+        	logger.debug(o+":"+output.getValueByField(o));
         
     }
 

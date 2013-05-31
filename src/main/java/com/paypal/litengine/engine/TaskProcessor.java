@@ -3,13 +3,19 @@ package com.paypal.litengine.engine;
 import com.paypal.litengine.Processor;
 import com.paypal.litengine.Tuple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class TaskProcessor implements Processor {
 
+	protected final Logger logger = LoggerFactory.getLogger(TaskProcessor.class);
     private Task task;
     
     @Override
     public void process() {
-       task.setOutput( doProcess(task.getInput()));
+    	logger.debug("start to process "+this.getClass().getName());
+        task.setOutput( doProcess(task.getInput()));
+        logger.debug("end to process "+this.getClass().getName());
     }
     
     @Override

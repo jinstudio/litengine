@@ -9,7 +9,6 @@ public class CountLengthProcessor extends TaskProcessor {
 
 	@Override
 	public Values doProcess(Tuple input) {
-		System.out.println("input is:" + input);
 		int len = 0;
 		for (String str : input) {
 			Values values = (Values) input.getValueByField(str);
@@ -17,7 +16,6 @@ public class CountLengthProcessor extends TaskProcessor {
 				len += ((String) val).length();
 			}
 		}
-		System.out.print("total length is:" + len);
 		return new Values(len);
 	}
 

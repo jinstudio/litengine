@@ -4,27 +4,30 @@ import com.paypal.litengine.Tuple;
 import com.paypal.litengine.engine.Fields;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.Values;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AppendStringProcessor extends TaskProcessor {
+	
+	final Logger logger = LoggerFactory.getLogger(AppendStringProcessor.class);
 
 	@Override
 	public Values doProcess(Tuple input) {
 	    try {
-	        System.out.println("AppendStringProcessor Sleeping...");
+	        logger.debug("AppendStringProcessor Sleeping...");
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("AppendStringProcessor wakeup...");
-		System.out.println("current processor:"+this.getClass());
+        logger.debug("AppendStringProcessor wakeup...");
 		StringBuilder sb= new StringBuilder();
 		Values values=(Values) input.getValueByField("source");
-		System.out.println("AppendStringProcessor values size:"+values.size());
+		logger.debug("AppendStringProcessor values size:"+values.size());
 		for(Object obj: values){
 			sb.append(obj).append(" ");
 		}
-		System.out.println("AppendStringProcessor  almost end");
+		logger.debug("AppendStringProcessor  almost end");
 		return new Values(sb.append("!").toString());
 	}
 

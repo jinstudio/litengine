@@ -5,3 +5,4 @@ lib/
 *.jar
 .settings
 target/
+*.log

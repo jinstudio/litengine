@@ -15,32 +15,38 @@ import com.paypal.litengine.BaseEngine;
 import com.paypal.litengine.Processor;
 import com.paypal.litengine.topo.Group;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TopologyEngine extends BaseEngine<TopoContext> {
+	
+	final Logger logger = LoggerFactory.getLogger(TopologyEngine.class);
 
     ThreadPoolExecutor processorExecutor = new ThreadPoolExecutor(100, 100, 100, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
-    long mainThread=-1;
+   // long mainThread=-1;
 
     @Override
-    public void execute(final TopoContext context) {
-        if(mainThread<0) {
-            mainThread=Thread.currentThread().getId();
-            System.out.println("amin thread id is:"+mainThread);
-        }
+	public void execute(TopoContext context) {
+		// TODO Auto-generated method stub
+		this.execute(context, false);
+	}
+
+    private void execute(final TopoContext context,boolean once) {
         context.lock();
         List<Group> canRuns = context.getCanRunGroups();
-        System.out.println("canRuns-----"+canRuns);
+        logger.debug("canRuns-----"+canRuns);
         if(Status.READY == context.getStatus())
             context.setStatus(Status.RUNNING);
         //execution finished
         if(context.isDone()){ 
-            System.out.println("context done === Thread.currentThread().getId:"+Thread.currentThread().getId());
+            logger.debug("context done === Thread.currentThread().getId:"+Thread.currentThread().getId());
         	context.setStatus(Status.DONE);
         	context.unlock();
             return;
         }
-        System.out.println("Thread.currentThread().getId:"+Thread.currentThread().getId());
-        while(canRuns.size()==0&&mainThread==Thread.currentThread().getId()){
+        logger.debug("Thread.currentThread().getId:"+Thread.currentThread().getId());
+        while(!once&&canRuns.size()==0){
             canRuns = context.getCanRunGroups();
         }
         context.unlock();
@@ -49,7 +55,7 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
         
         for(Group group: canRuns) {
             group.lock();
-            System.out.println("try to running group-------------------->"+group.getName());
+            logger.debug("try to running group-------------------->"+group.getName());
             List<Task> tasks = group.getTasks();
             OutputFieldsDeclarer declarer = new OutputFieldsDeclarerImpl();
             List<Future> futures = new ArrayList<Future>();
@@ -68,7 +74,7 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
 
                 @Override
                 public void run() {
-                    execute(context);
+                    execute(context,true);
                 }
         }).start();
         }
@@ -96,7 +102,7 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
                 context.addInputMapping(group,kid, new TupleImpl(declarer.getFieldsDeclaration(), outputs));
             }
         }
-        if(mainThread==Thread.currentThread().getId())
+        if(!once)
             execute(context);
     }
 
@@ -116,18 +122,20 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
 
         @Override
         public Object call() throws Exception {
-            System.out.println("start to run group-------------------->"+group.getName());
+            logger.debug("start to run group-------------------->"+group.getName());
             Processor processor = this.task.getProcessor();
             processor.process();
-            System.out.println("end processor process processor:"+this.task.getProcessor());
+            logger.debug("end processor process processor:"+this.task.getProcessor());
             processor.declareOutputFields(this.declarer);
-            System.out.println("try to mark done processor:"+this.task.getProcessor());
+            logger.debug("try to mark done processor:"+this.task.getProcessor());
             context.markDone(group, task);
             // execute(context);
-            System.out.println("end to run group-------------------->"+group.getName());
+            logger.debug("end to run group-------------------->"+group.getName());
             return this.task.getOutput();
         }
 
     }
+
+	
 
 }

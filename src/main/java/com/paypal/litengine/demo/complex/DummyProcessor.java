@@ -6,7 +6,7 @@ public class DummyProcessor extends SpareTaskProcessor {
 
 	@Override
 	public void process() {
-		 System.out.println("I'm dummy processor");
+		
 	}
 	 
 	 

@@ -9,16 +9,15 @@ public class PassdownWithSleepProcessor extends TaskProcessor {
 
 	@Override
 	public Values doProcess(Tuple input) {
-		System.out.println("input is:"+input);
+		logger.debug("input is:"+input);
 	    try {
-	        System.out.println("PassdownWithSleepProcessor Sleeping...");
+	        logger.debug("PassdownWithSleepProcessor Sleeping...");
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("PassdownWithSleepProcessor wakeup...");
-		System.out.println(this.getClass());
+        logger.debug("PassdownWithSleepProcessor wakeup...");
 		if (input.getValue(0) instanceof Values)
 			return (Values) input.getValue(0);
 		else

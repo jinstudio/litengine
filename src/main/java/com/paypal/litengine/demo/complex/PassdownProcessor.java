@@ -10,8 +10,6 @@ public class PassdownProcessor extends TaskProcessor {
 	@Override
 	public Values doProcess(Tuple input) {
 	    
-		System.out.println(this.getClass());
-		System.out.println("input is:"+input);
 		if (input.getValue(0) instanceof Values)
 			return (Values) input.getValue(0);
 		else

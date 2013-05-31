@@ -9,7 +9,6 @@ public class GenerateDataProcessor extends TaskProcessor {
 
 	@Override
 	public Values doProcess(Tuple input) {
-		System.out.println(this.getClass());
 		return new Values("paypal","ebay","hello","world!");
 	}
 
