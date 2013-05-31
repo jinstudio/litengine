@@ -54,6 +54,7 @@ public class WordsCountDemo {
         Topology topo = builder.createTopology();
         Engine<TopoContext> engine = new TopologyEngine();
         Tuple output=engine.trigger(new TopoContext(topo), null);
+        System.out.println("##############################end##########################");
         System.out.println(output);
         for(String o:output) 
         	System.out.println(o+":"+output.getValueByField(o));

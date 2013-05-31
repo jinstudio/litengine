@@ -17,12 +17,14 @@ public class AppendStringProcessor extends TaskProcessor {
             e.printStackTrace();
         }
         System.out.println("AppendStringProcessor wakeup...");
-		System.out.println(this.getClass());
+		System.out.println("current processor:"+this.getClass());
 		StringBuilder sb= new StringBuilder();
 		Values values=(Values) input.getValueByField("source");
+		System.out.println("AppendStringProcessor values size:"+values.size());
 		for(Object obj: values){
 			sb.append(obj).append(" ");
 		}
+		System.out.println("AppendStringProcessor  almost end");
 		return new Values(sb.append("!").toString());
 	}
 

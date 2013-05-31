@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.paypal.litengine.BaseContext;
 import com.paypal.litengine.Tuple;
@@ -14,9 +16,11 @@ public class TopoContext extends BaseContext{
     
     Status status=Status.READY;
     Topology topology;
-    private List<Group> doneGroups=new ArrayList<Group>();   
-    private Map<Group,List<Task>> doneGroupsMapping=new HashMap<Group,List<Task>>();
-    private Map<Group,Tuple> inputMapping= new HashMap<Group,Tuple>();
+    private volatile List<Group> doneGroups=new ArrayList<Group>();   
+    private volatile Map<Group,List<Task>> doneGroupsMapping=new HashMap<Group,List<Task>>();
+    private volatile Map<Group,Tuple> inputMapping= new HashMap<Group,Tuple>();
+    private volatile List<Group> scheduledGroups=new ArrayList<Group>();
+    private Lock lock = new ReentrantLock();
     
     public TopoContext(Topology topology) {
         super();
@@ -35,7 +39,7 @@ public class TopoContext extends BaseContext{
         return doneGroups.containsAll(groups);
      }
     
-    public void markDone(Group group,Task task){
+    public synchronized void markDone(Group group,Task task){
         List<Task> tasks=doneGroupsMapping.get(group);
         if(tasks==null){
             List<Task> lists= new ArrayList<Task>(); 
@@ -61,10 +65,13 @@ public class TopoContext extends BaseContext{
     }
     
     public Tuple getInput(Group group){
+        while(this.topology.getNormal().contains(group)&&!inputMapping.containsKey(group)){
+            
+        }
         return inputMapping.get(group);
     }
     
-    public void addInputMapping(Group parent,Group group,Tuple tuple){
+    public synchronized void addInputMapping(Group parent,Group group,Tuple tuple){
     	Tuple tup=inputMapping.get(group);
     	if(tup!=null){
     		tup.add(tuple,parent.getName());
@@ -73,27 +80,32 @@ public class TopoContext extends BaseContext{
     		inputMapping.put(group, tuple);
     }
     
-    public void addInputMapping(Group group,Fields fields){
+    public synchronized void addInputMapping(Group group,Fields fields){
         inputMapping.put(group, new TupleImpl(fields));
     }
     
-    public List<Group> getCanRunGroups(){
+    public synchronized List<Group> getCanRunGroups(){
+       // System.out.println("status:"+status);
+       // System.out.println("doneGroups:"+doneGroups);
+      //  System.out.println("scheduledGroups:"+scheduledGroups);
         List<Group> canRuns= new ArrayList<Group>();
         if(Status.READY==status)
             return topology.getStarter();
         else if(Status.RUNNING==status){
             List<Group> normal=topology.getNormal();
-            
             for(Group group: normal){
-                if(!isDone(group)&&isDone(group.getParent())){
+            //    System.out.println("getCanRunGroups:"+group);
+                if(!isDone(group)&&isDone(group.getParent())&&!scheduledGroups.contains(group)){
                     canRuns.add(group);
                 }
             }
         }
+     //   System.out.println("canRuns:"+canRuns);
+        scheduledGroups.addAll(canRuns);
         return canRuns;
     }
 
-    public boolean canRun(Group group){
+    public synchronized boolean canRun(Group group){
     	return getCanRunGroups().contains(group);
     }
     
@@ -101,8 +113,17 @@ public class TopoContext extends BaseContext{
         return status;
     }
 
-    public void setStatus(Status status) {
+    public synchronized void setStatus(Status status) {
         this.status = status;
+    }
+    
+    public synchronized boolean isDone(){
+        if(Status.DONE==this.status)
+            return true;
+        System.out.println("this.getCanRunGroups:"+this.getCanRunGroups());
+        System.out.println("this.topology.getAll:"+this.topology.getAll().size());
+        System.out.println("this.doneGroups:"+this.doneGroups.size());
+        return this.getCanRunGroups().size()==0&&(this.doneGroups.size()==this.topology.getAll().size());
     }
 
     @Override
@@ -146,5 +167,13 @@ public class TopoContext extends BaseContext{
 		
 		return new TupleImpl(fields,values);
 	}
+	
+	 public void lock(){
+	        this.lock.lock();
+	 }
+	    
+	 public void unlock(){
+	        this.lock.unlock();
+	 }
 
 }

@@ -1,7 +1,9 @@
 package com.paypal.litengine.engine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -17,20 +19,37 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
 
     ThreadPoolExecutor processorExecutor = new ThreadPoolExecutor(100, 100, 100, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
+    long mainThread=-1;
 
     @Override
-    public void execute(TopoContext context) {
-
+    public void execute(final TopoContext context) {
+        if(mainThread<0) {
+            mainThread=Thread.currentThread().getId();
+            System.out.println("amin thread id is:"+mainThread);
+        }
+        context.lock();
         List<Group> canRuns = context.getCanRunGroups();
+        System.out.println("canRuns-----"+canRuns);
         if(Status.READY == context.getStatus())
             context.setStatus(Status.RUNNING);
         //execution finished
-        if(canRuns.size() == 0){
+        if(context.isDone()){ 
+            System.out.println("context done === Thread.currentThread().getId:"+Thread.currentThread().getId());
         	context.setStatus(Status.DONE);
+        	context.unlock();
             return;
         }
+        System.out.println("Thread.currentThread().getId:"+Thread.currentThread().getId());
+        while(canRuns.size()==0&&mainThread==Thread.currentThread().getId()){
+            canRuns = context.getCanRunGroups();
+        }
+        context.unlock();
+        Map<Group,OutputFieldsDeclarer> filedMapping= new HashMap<Group,OutputFieldsDeclarer>();
+        Map<Group,List<Future>> futureMapping= new HashMap<Group,List<Future>>();
+        
         for(Group group: canRuns) {
             group.lock();
+            System.out.println("try to running group-------------------->"+group.getName());
             List<Task> tasks = group.getTasks();
             OutputFieldsDeclarer declarer = new OutputFieldsDeclarerImpl();
             List<Future> futures = new ArrayList<Future>();
@@ -41,10 +60,23 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
                 Future future = processorExecutor.submit(new TopologyCallable(context, group, task, declarer));
                 futures.add(future);
             }
-
+            filedMapping.put(group, declarer);
+            futureMapping.put(group,futures);
             group.unlock();
+           
+            new Thread(new Runnable(){
 
+                @Override
+                public void run() {
+                    execute(context);
+                }
+        }).start();
+        }
+        
+        for(Group group: canRuns){
             Values outputs = new Values();
+            OutputFieldsDeclarer declarer =filedMapping.get(group);
+            List<Future> futures=futureMapping.get(group);
             if(futures.size() > 0) {
                 for(Future<?> future: futures) {
                     try {
@@ -64,15 +96,8 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
                 context.addInputMapping(group,kid, new TupleImpl(declarer.getFieldsDeclaration(), outputs));
             }
         }
-        // Values outputs = new Values();
-        // if (results.size() > 0) {
-        // for (Future<?> future : results) {
-        // outputs.add(future.get());
-        // }
-        // }
-
-        this.execute(context);
-
+        if(mainThread==Thread.currentThread().getId())
+            execute(context);
     }
 
     class TopologyCallable implements Callable {
@@ -91,11 +116,15 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
 
         @Override
         public Object call() throws Exception {
+            System.out.println("start to run group-------------------->"+group.getName());
             Processor processor = this.task.getProcessor();
             processor.process();
+            System.out.println("end processor process processor:"+this.task.getProcessor());
             processor.declareOutputFields(this.declarer);
+            System.out.println("try to mark done processor:"+this.task.getProcessor());
             context.markDone(group, task);
             // execute(context);
+            System.out.println("end to run group-------------------->"+group.getName());
             return this.task.getOutput();
         }
 
