@@ -35,7 +35,6 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
     private void execute(final TopoContext context,boolean once) {
         context.lock();
         List<Group> canRuns = context.getCanRunGroups();
-        logger.debug("canRuns-----"+canRuns);
         if(Status.READY == context.getStatus())
             context.setStatus(Status.RUNNING);
         //execution finished
@@ -45,7 +44,6 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
         	context.unlock();
             return;
         }
-        logger.debug("Thread.currentThread().getId:"+Thread.currentThread().getId());
         while(!once&&canRuns.size()==0){
             canRuns = context.getCanRunGroups();
         }
@@ -124,10 +122,12 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
         public Object call() throws Exception {
             logger.debug("start to run group-------------------->"+group.getName());
             Processor processor = this.task.getProcessor();
-            processor.process();
-            logger.debug("end processor process processor:"+this.task.getProcessor());
-            processor.declareOutputFields(this.declarer);
-            logger.debug("try to mark done processor:"+this.task.getProcessor());
+            if(processor!=null){
+            	processor.process();
+            	logger.debug("end processor process processor:"+this.task.getProcessor());
+            	processor.declareOutputFields(this.declarer);
+            	logger.debug("try to mark done processor:"+this.task.getProcessor());
+            }
             context.markDone(group, task);
             // execute(context);
             logger.debug("end to run group-------------------->"+group.getName());
@@ -135,7 +135,5 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
         }
 
     }
-
-	
 
 }

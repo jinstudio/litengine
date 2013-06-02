@@ -4,14 +4,12 @@ import com.paypal.litengine.Tuple;
 import com.paypal.litengine.engine.Fields;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.Values;
-import com.paypal.litengine.topo.config.Group;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-@Group(name="group1", waits = { "root" })
-public class AppendStringProcessor extends TaskProcessor {
+
+public class AppendString2Processor extends TaskProcessor {
 	
-	final Logger logger = LoggerFactory.getLogger(AppendStringProcessor.class);
+	final Logger logger = LoggerFactory.getLogger(AppendString2Processor.class);
 
 	@Override
 	public Values doProcess(Tuple input) {
@@ -26,6 +24,11 @@ public class AppendStringProcessor extends TaskProcessor {
 		StringBuilder sb= new StringBuilder();
 		
 		Values values=(Values) input.getValueByField("source");
+		logger.debug("AppendStringProcessor values size:"+values.size());
+		for(Object obj: values){
+			sb.append(obj).append(" ");
+		}
+		values=(Values) input.getValueByField("source2");
 		logger.debug("AppendStringProcessor values size:"+values.size());
 		for(Object obj: values){
 			sb.append(obj).append(" ");

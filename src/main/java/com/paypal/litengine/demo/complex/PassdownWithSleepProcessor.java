@@ -4,7 +4,9 @@ import com.paypal.litengine.Tuple;
 import com.paypal.litengine.engine.Fields;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.Values;
+import com.paypal.litengine.topo.config.Group;
 
+@Group(name="group4", waits={"group1"})
 public class PassdownWithSleepProcessor extends TaskProcessor {
 
 	@Override
