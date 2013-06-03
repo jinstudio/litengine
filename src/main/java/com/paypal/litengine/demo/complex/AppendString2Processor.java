@@ -1,11 +1,12 @@
 package com.paypal.litengine.demo.complex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.paypal.litengine.Tuple;
 import com.paypal.litengine.engine.Fields;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.Values;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class AppendString2Processor extends TaskProcessor {
 	
@@ -24,12 +25,12 @@ public class AppendString2Processor extends TaskProcessor {
 		StringBuilder sb= new StringBuilder();
 		
 		Values values=(Values) input.getValueByField("source");
-		logger.debug("AppendStringProcessor values size:"+values.size());
+		logger.debug("AppendStringProcessor values size:{}",values.size());
 		for(Object obj: values){
 			sb.append(obj).append(" ");
 		}
 		values=(Values) input.getValueByField("source2");
-		logger.debug("AppendStringProcessor values size:"+values.size());
+		logger.debug("AppendStringProcessor values size:{}",values.size());
 		for(Object obj: values){
 			sb.append(obj).append(" ");
 		}

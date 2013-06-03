@@ -56,9 +56,9 @@ also, you can check <a href="https://github.com/jinstudio/litengine/blob/master/
 
 you can check <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/demo/complex/WordsCountDemoWithMultipleDS.java">WordsCountDemoWithMultipleDS</a> to create the following style workflow,
  <pre>
-                +-----------+  +-----------+                                     
-                |   root1   |  |  root2    |                              
-                +----+------+  +----+------+                           
+                +-----------+  +-----------+ 
+                |   root1   |  |  root2    |
+                +----+------+  +----+------+
                          \        /
                           \      /
                        +----+------+

@@ -1,10 +1,10 @@
 package com.paypal.litengine.engine;
 
-import com.paypal.litengine.Processor;
-import com.paypal.litengine.Tuple;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.paypal.litengine.Processor;
+import com.paypal.litengine.Tuple;
 
 public abstract class TaskProcessor implements Processor {
 
@@ -13,9 +13,9 @@ public abstract class TaskProcessor implements Processor {
     
     @Override
     public void process() {
-    	logger.debug("start to process "+this.getClass().getName());
+    	logger.debug("start to process {}",this.getClass().getName());
         task.setOutput( doProcess(task.getInput()));
-        logger.debug("end to process "+this.getClass().getName());
+        logger.debug("end to process {}",this.getClass().getName());
     }
     
     @Override
