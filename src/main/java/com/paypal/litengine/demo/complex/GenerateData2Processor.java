@@ -9,12 +9,12 @@ public class GenerateData2Processor extends TaskProcessor {
 
 	@Override
 	public Values doProcess(Tuple input) {
-		return new Values("apple","microsoft","intel","ericsson");
+		return new Values("apple microsoft","intel ericsson");
 	}
 
 	@Override
 	public Fields defineOutput() {
-		return new Fields("source2");
+		return new Fields("source21","source22");
 	}
 
 }

@@ -18,12 +18,12 @@ public class GenerateDataProcessor extends TaskProcessor {
 	            e.printStackTrace();
 	        }
 	        logger.debug("GenerateDataProcessor wakeup...");
-		return new Values("paypal","ebay","paypal","jinstudio");
+		return new Values("paypal ebay","paypal jinstudio");
 	}
 
 	@Override
 	public Fields defineOutput() {
-		return new Fields("source");
+		return new Fields("source1","source2");
 	}
 
 }

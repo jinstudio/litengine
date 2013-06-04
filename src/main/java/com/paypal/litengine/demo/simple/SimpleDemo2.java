@@ -10,7 +10,12 @@ import com.paypal.litengine.engine.SimpleEngine;
 import com.paypal.litengine.engine.Task;
 import com.paypal.litengine.engine.Values;
 
-public class SimpleDemo {
+/**
+ * example using EngineFactory
+ * @author jyao1
+ *
+ */
+public class SimpleDemo2 {
 
     /**
      * @param args
@@ -22,16 +27,13 @@ public class SimpleDemo {
         Assemble ass= new Assemble();
         ass.setStartPoint(new Task());
         SetTransactionContextRequest request= new SetTransactionContextRequest();
-//        Task tmp=new Task().setInput(request).setProcessor(new AddressNormTaskProcessor1());
-//        System.out.println(tmp.getInput());
         ass.addWorkingTask(new Task().setInput(request).setProcessor(new AddressNormTaskProcessor1()));
         ass.addWorkingTask(new Task().setInput(request).setProcessor(new TransformTaskProcessor()));
         ass.addWorkingTask(new Task().setInput(request).setProcessor(new AddressNormTaskProcessor2()));
         ass.setEndPoint(new Task().setProcessor(new ComposeTaskProcessor()));
         
-        Engine<Assemble> engine= new SimpleEngine();
-        
-        Tuple output=engine.trigger(ass, null);
+        //trigger like this
+        Tuple output=EngineFactory.getInstance().getEngine(ass).trigger(null);
         System.out.println(output);
         for(Object o:output)
         	System.out.println(o);

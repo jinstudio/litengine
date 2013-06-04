@@ -13,10 +13,7 @@ public class CountLengthProcessor extends TaskProcessor {
 	public Values doProcess(Tuple input) {
 		int len = 0;
 		for (String str : input) {
-			Values values = (Values) input.getValueByField(str);
-			for (Object val : values) {
-				len += ((String) val).length();
-			}
+				len += ((String) input.getValueByField(str)).length();
 		}
 		return new Values(len);
 	}

@@ -10,8 +10,8 @@ public class TransformTaskProcessor extends TaskProcessor {
     @Override
     public Values doProcess(Tuple input) {
         SetTransactionContextRequest request=(SetTransactionContextRequest) input.getValue(0);
-        
-        return new Values(new Object());
+        return null;
+       // return new Values(new Object());//this will throw exception
     }
 
 	@Override

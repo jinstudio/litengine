@@ -57,12 +57,13 @@ public class SimpleEngine extends BaseEngine<Assemble>{
         if(results.size()>0){
             for(Future<?> future:results){
                 try {
-                    outputs.add(future.get());
+                	Values values=(Values)future.get();
+                	if(values!=null){
+                		outputs.addAll(values);
+                	}
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 } catch (ExecutionException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -73,4 +74,5 @@ public class SimpleEngine extends BaseEngine<Assemble>{
         assemble.getEndPoint().getProcessor().declareOutputFields(declarer4end);
         
     }
+	
 }

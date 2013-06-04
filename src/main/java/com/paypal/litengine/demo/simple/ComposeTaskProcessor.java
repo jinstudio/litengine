@@ -12,7 +12,7 @@ public class ComposeTaskProcessor extends TaskProcessor {
     	
       //  List<Object> outputs =( List<Object>)input.;
         for(String obj: input){
-            System.out.println(obj+":"+input.getValueByField(obj));
+            System.out.println(obj+"="+input.getValueByField(obj));
         }
         System.out.println("Now i want to compose the result and return OmlSetTransactionContextRequest");
         return new Values(new OmlSetTransactionContextRequest());

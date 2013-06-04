@@ -23,15 +23,10 @@ public class AppendString2Processor extends TaskProcessor {
         logger.debug("AppendStringProcessor wakeup...");
 		StringBuilder sb= new StringBuilder();
 		
-		Values values=(Values) input.getValueByField("source");
-		logger.debug("AppendStringProcessor values size:"+values.size());
-		for(Object obj: values){
-			sb.append(obj).append(" ");
-		}
-		values=(Values) input.getValueByField("source2");
-		logger.debug("AppendStringProcessor values size:"+values.size());
-		for(Object obj: values){
-			sb.append(obj).append(" ");
+		
+		logger.debug("AppendStringProcessor values size:"+input.size());
+		for(String str: input){
+			sb.append(input.getValueByField(str)).append(" ");
 		}
 		logger.debug("AppendStringProcessor  almost end");
 		return new Values(sb.append("!").toString());

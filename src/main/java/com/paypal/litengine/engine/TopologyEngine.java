@@ -84,7 +84,10 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
             if(futures.size() > 0) {
                 for(Future<?> future: futures) {
                     try {
-                        outputs.add(future.get());
+                    	Values values=(Values)future.get();
+                    	if(values!=null){
+                    		outputs.addAll(values);
+                    	}
                     } catch (InterruptedException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
