@@ -3,7 +3,6 @@ package com.paypal.litengine.engine;
 import com.paypal.litengine.Processor;
 import com.paypal.litengine.Tuple;
 import com.paypal.litengine.exception.FieldAndValueSizeNotMatchException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,7 @@ public abstract class TaskProcessor implements Processor {
     
     @Override
     public void process() {
-    	logger.debug("start to process "+this.getClass().getName());
+		logger.debug("start to process {}",this.getClass().getName());
     	Values values=doProcess(task.getInput());
     	Fields definedOutput = this.defineOutput();
 		if(values!=null&&definedOutput==null){
@@ -27,7 +26,7 @@ public abstract class TaskProcessor implements Processor {
     		throw new FieldAndValueSizeNotMatchException(definedOutput, values);
     	}
         task.setOutput(values);
-        logger.debug("end to process "+this.getClass().getName());
+        logger.debug("end to process {}",this.getClass().getName());
     }
     
     @Override

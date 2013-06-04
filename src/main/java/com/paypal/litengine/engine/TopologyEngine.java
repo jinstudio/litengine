@@ -11,12 +11,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.paypal.litengine.BaseEngine;
 import com.paypal.litengine.Processor;
 import com.paypal.litengine.topo.Group;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TopologyEngine extends BaseEngine<TopoContext> {
 	
@@ -39,7 +39,8 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
             context.setStatus(Status.RUNNING);
         //execution finished
         if(context.isDone()){ 
-            logger.debug("context done === Thread.currentThread().getId:"+Thread.currentThread().getId());
+            if(logger.isDebugEnabled())
+                logger.debug("context done === current thread:{}",Thread.currentThread().getName());
         	context.setStatus(Status.DONE);
         	context.unlock();
             return;
@@ -53,7 +54,7 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
         
         for(Group group: canRuns) {
             group.lock();
-            logger.debug("try to running group-------------------->"+group.getName());
+            logger.debug("try to running group-------------------->{}",group.getName());
             List<Task> tasks = group.getTasks();
             OutputFieldsDeclarer declarer = new OutputFieldsDeclarerImpl();
             List<Future> futures = new ArrayList<Future>();
@@ -123,7 +124,7 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
 
         @Override
         public Object call() throws Exception {
-            logger.debug("start to run group-------------------->"+group.getName());
+            logger.debug("start to run group-------------------->{}",group.getName());
             Processor processor = this.task.getProcessor();
             if(processor!=null){
             	processor.process();
@@ -133,7 +134,7 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
             }
             context.markDone(group, task);
             // execute(context);
-            logger.debug("end to run group-------------------->"+group.getName());
+            logger.debug("end to run group-------------------->{}",group.getName());
             return this.task.getOutput();
         }
 

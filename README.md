@@ -25,6 +25,7 @@ group 2, group3 and group4 will running in parallel.
                         +----+------+
                         |   group5  |
                         +-----+-----+
+</pre>
 the workflow is created using the streaming api, like this 
 <pre>
 		TopologyBuilder builder = new TopologyBuilder();
@@ -34,7 +35,7 @@ the workflow is created using the streaming api, like this
         builder.addTask("group3", new Task().setProcessor(new PassdownProcessor())).wait("group1");
         builder.addTask("group4", new Task().setProcessor(new PassdownWithSleepProcessor())).wait("group1");
         builder.addTask("group5", new Task().setProcessor(new CountLengthProcessor())).wait("group2").wait("group3").wait("group4");
-</re>                        
+</pre>                        
 also, you can check <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/demo/complex/WordsCountDemoAnno.java">WordsCountDemoAnno</a> to create the previous workflow with annotation,then code of creating workflow will be like this:
 <pre>
  Tuple output=engine.trigger(new TopoContext(new Config(){
@@ -55,9 +56,9 @@ also, you can check <a href="https://github.com/jinstudio/litengine/blob/master/
 
 you can check <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/demo/complex/WordsCountDemoWithMultipleDS.java">WordsCountDemoWithMultipleDS</a> to create the following style workflow,
  <pre>
-                +-----------+  +-----------+                                     
-                |   root1   |  |  root2    |                              
-                +----+------+  +----+------+                           
+                +-----------+  +-----------+ 
+                |   root1   |  |  root2    |
+                +----+------+  +----+------+
                          \        /
                           \      /
                        +----+------+
