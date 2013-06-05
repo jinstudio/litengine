@@ -24,9 +24,7 @@ public class Fields implements Iterable<String>{
         _fields = new ArrayList<String>(fields.size());
         for (String field : fields) {
             if (_fields.contains(field))
-                throw new IllegalArgumentException(
-                    String.format("duplicate field '%s'", field)
-                );
+                throw new DuplicateFieldException( field);
             _fields.add(field);
         }
         index();
@@ -36,9 +34,17 @@ public class Fields implements Iterable<String>{
     	int size=_index.size();
     	for (String field : fields) {
             if (_fields.contains(field))
-                throw new IllegalArgumentException(
-                    String.format("duplicate field '%s'", field)
-                );
+                throw new DuplicateFieldException(field);
+            _fields.add(field);
+            _index.put(field, size++);
+        }
+    }
+    
+    public void add(Fields fields,String prefix){
+        int size=_index.size();
+        for (String field : fields) {
+            if (_fields.contains(field))
+                field=prefix+field;
             _fields.add(field);
             _index.put(field, size++);
         }

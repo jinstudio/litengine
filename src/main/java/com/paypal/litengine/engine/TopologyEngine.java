@@ -24,11 +24,11 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
 
     ThreadPoolExecutor processorExecutor = new ThreadPoolExecutor(100, 100, 100, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
-   // long mainThread=-1;
+    ThreadPoolExecutor subProcessorExecutor = new ThreadPoolExecutor(50, 50, 50, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>());
 
     @Override
 	public void execute(TopoContext context) {
-		// TODO Auto-generated method stub
 		this.execute(context, false);
 	}
 
@@ -69,13 +69,13 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
             futureMapping.put(group,futures);
             group.unlock();
            
-            new Thread(new Runnable(){
+            subProcessorExecutor.execute(new Runnable(){
 
                 @Override
                 public void run() {
                     execute(context,true);
                 }
-        }).start();
+        });
         }
         
         for(Group group: canRuns){

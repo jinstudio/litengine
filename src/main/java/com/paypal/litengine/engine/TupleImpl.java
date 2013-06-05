@@ -71,6 +71,9 @@ public class TupleImpl implements Tuple {
 	}
 
 	@Override
+	/**
+	 * add with prefix, for internal handling input, the prefix will be auto added in case of conflicting
+	 */
 	public void add(Tuple tuple, String prefix) {
 		
 		for(String str: tuple){

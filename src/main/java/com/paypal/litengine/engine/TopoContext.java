@@ -202,7 +202,7 @@ public class TopoContext extends BaseContext {
 		Values values = new Values();
 		for (Group g : leaf) {
 			for (Task task : g.getTasks()) {
-				fields.add(task.getOutputFields());
+				fields.add(task.getOutputFields(),g.getName());
 				values.add(task.getOutput());
 			}
 		}

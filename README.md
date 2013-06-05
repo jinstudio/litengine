@@ -98,4 +98,31 @@ you can check <a href="https://github.com/jinstudio/litengine/blob/master/src/ma
                         +-----+-----+
 </pre>
 
+also a more complex one <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/demo/complex/WordsCountDemoAnno2.java">WordsCountDemoAnno2</a>  which do not have a single end node
+<pre>
+                       +-----------+                                       
+                       |   root    |                                    
+                       +----+------+                             
+                            |
+                            |
+                       +----+------+
+                       |   group1  |
+                       +-----+-----+
+                      /      |       \
+                     /       |        \
+       +-----------+    +----+------+   +-----------+
+       |   group2  |    |   group3  |   |   group4  |
+       +-----------+    +-----------+   +-----------+
+          /      \                            |
+         /        \                           |
+  +-----------+    +----+------+        +-----------+
+  |   group5  |    |   group6  |        |   group7  |
+  +-----------+    +-----------+        +-----------+ 
+                             \           /
+                              \         /
+                             +-----------+                                       
+                             |   group8  |                                    
+                             +----+------+                 
+</pre>
+
 please contact with <a href="mailto:jstudio.yao@gmail.com?subject=[litengine]">Jin Yao</a> for comments/support/improvements or bugs
