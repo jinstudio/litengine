@@ -61,7 +61,7 @@ public class WordsCountDemo {
         logger.debug("##############################end##########################");
         for(String o:output) 
         	logger.debug(o+":"+output.getValueByField(o));
-        logger.debug("{}-{} time consumed:{}",Thread.currentThread().getName(),Thread.currentThread().getId(),System.currentTimeMillis()-start);
+        logger.info("{}-{} time consumed:{}",Thread.currentThread().getName(),Thread.currentThread().getId(),System.currentTimeMillis()-start);
         //you can execute the flow twice with the same result!
         /*output=engine.trigger(new TopoContext(topo), null,2000);
         logger.debug("##############################end##########################");

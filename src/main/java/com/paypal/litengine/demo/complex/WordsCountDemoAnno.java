@@ -64,9 +64,9 @@ public class WordsCountDemoAnno {
 			}
         	
         }), null);
-        logger.debug("##############################end##########################");
+        logger.info("##############################end##########################");
         for(String o:output) 
-        	logger.debug(o+":"+output.getValueByField(o));
+        	logger.info(o+":"+output.getValueByField(o));
     }
 
 }

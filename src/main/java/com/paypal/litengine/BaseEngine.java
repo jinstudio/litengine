@@ -9,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class BaseEngine<T extends Context<Tuple, Tuple>> implements Engine<T> {
 
-    ThreadPoolExecutor mainExecutor = new ThreadPoolExecutor(25, 100, 0, TimeUnit.MILLISECONDS,
+    ThreadPoolExecutor mainExecutor = new ThreadPoolExecutor(1, 5, 0, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
 
     final Lock lock = new ReentrantLock();
@@ -27,15 +27,22 @@ public abstract class BaseEngine<T extends Context<Tuple, Tuple>> implements Eng
     }
 
     @Override
-    public Tuple trigger(T context, Tuple input) {
-        context.initTriggerSource(input);
-        this.execute(context);
-        return context.getFinalOutput();
+    public Tuple trigger(T t, Tuple input) {
+        execute(t, input);
+        return t.getFinalOutput();
     }
+
+	private void execute(T t, Tuple input) {
+		t.initTriggerSource(input);
+        this.execute(t);
+        lock.lock();
+        finish.signal();
+        lock.unlock();
+	}
 
     @Override
     public Tuple trigger(Tuple input) {
-        return this.trigger(context, input);
+        return this.trigger(this.context, input);
     }
 
     @Override
@@ -46,7 +53,7 @@ public abstract class BaseEngine<T extends Context<Tuple, Tuple>> implements Eng
 
                 @Override
                 public void run() {
-                    trigger(t, input);
+                	execute(t, input);
                 }
 
             });
@@ -67,7 +74,7 @@ public abstract class BaseEngine<T extends Context<Tuple, Tuple>> implements Eng
 
     @Override
     public Tuple trigger(Tuple input, int timeout) {
-        return this.trigger(context, input, timeout);
+        return this.trigger(this.context, input, timeout);
     }
 
     public abstract void execute(T context);

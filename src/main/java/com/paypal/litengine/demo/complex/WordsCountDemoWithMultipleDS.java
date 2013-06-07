@@ -57,9 +57,9 @@ public class WordsCountDemoWithMultipleDS {
         Topology topo = builder.createTopology();
         Engine<TopoContext> engine = new TopologyEngine();
         Tuple output=engine.trigger(new TopoContext(topo), null);
-        logger.debug("##############################end##########################");
+        logger.info("##############################end##########################");
         for(String o:output) 
-        	logger.debug(o+":"+output.getValueByField(o));
+        	logger.info(o+":"+output.getValueByField(o));
         
         //you can execute the flow twice with the same result!
        /* output=engine.trigger(new TopoContext(topo), null);

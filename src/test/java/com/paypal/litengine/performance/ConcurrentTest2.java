@@ -27,15 +27,7 @@ public class ConcurrentTest2 {
             @Override
             void doWork() {
                 { 
-                    try {
-                        WordsCountDemoAnno2.main(new String[] {});
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                  WordsCountDemoAnno2.run();
                 }
             }
               
@@ -43,6 +35,6 @@ public class ConcurrentTest2 {
 
         startSignal.countDown();      // let all threads proceed
         doneSignal.await();           // wait for all to finish
-        logger.debug("{}-{} total time consumed:{}",Thread.currentThread().getName(),Thread.currentThread().getId(),System.currentTimeMillis()-start);
+        logger.info("{}-{} total time consumed:{}",Thread.currentThread().getName(),Thread.currentThread().getId(),System.currentTimeMillis()-start);
     }
 }

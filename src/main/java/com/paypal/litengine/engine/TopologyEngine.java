@@ -23,10 +23,10 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
 	
 	final Logger logger = LoggerFactory.getLogger(TopologyEngine.class);
 
-    ThreadPoolExecutor processorExecutor = new ThreadPoolExecutor(80, 600, 0, TimeUnit.MILLISECONDS,
+    ThreadPoolExecutor processorExecutor = new ThreadPoolExecutor(100, 200, 0, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
-    ThreadPoolExecutor subProcessorExecutor = new ThreadPoolExecutor(80, 600, 0, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<Runnable>());
+   // ThreadPoolExecutor subProcessorExecutor = new ThreadPoolExecutor(80, 600, 0, TimeUnit.MILLISECONDS,
+   //         new LinkedBlockingQueue<Runnable>());
 
     @Override
 	public void execute(TopoContext context) {
@@ -79,7 +79,7 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
             futureMapping.put(group,futures);
             group.unlock();
            
-            subProcessorExecutor.execute(new Runnable(){
+            processorExecutor.execute(new Runnable(){
                 @Override
                 public void run() {
                     execute(context,true);
@@ -88,7 +88,7 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
         }
         context.lock();
        
-        subProcessorExecutor.execute(new Runnable(){ 
+        processorExecutor.execute(new Runnable(){ 
             @Override
             public void run() {
                 for(Group group: clonedCanRuns){
