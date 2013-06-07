@@ -5,15 +5,9 @@ import com.paypal.litengine.engine.Fields;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.Values;
 import com.paypal.litengine.topo.config.Group;
-import com.paypal.litengine.topo.config.Groups;
-@Groups(group={@Group(name="group2", waits={"group1"}),
-        @Group(name="group3", waits={"group1"}),
-      //  @Group(name="group5", waits={"group2"}),
-        @Group(name="group6", waits={"group2"}),
-        @Group(name="group7", waits={"group4"}),
-        @Group(name="group8", waits={"group6","group7"})})
 
-public class PassdownProcessor2 extends TaskProcessor {
+@Group(name="group5", waits={"group2"})
+public class PassdownProcessor2g5 extends TaskProcessor {
 
 	@Override
 	public Values doProcess(Tuple input) {

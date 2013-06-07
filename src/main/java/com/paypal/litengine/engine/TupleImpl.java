@@ -19,6 +19,9 @@ public class TupleImpl implements Tuple {
 	
     public TupleImpl(Fields _fields,List<Object> _values) {
 		super();
+		//int valueSize=_values.size();
+		//int filedSize=_fields.size();
+		//if(this.values.size())
 		this.values = _values;
 		this.fields = _fields;
 	}

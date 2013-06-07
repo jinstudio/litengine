@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 import com.paypal.litengine.engine.Task;
 
 public class Group {
@@ -72,6 +73,11 @@ public class Group {
     }
     
     @Override
+    public String toString() {
+        return "Group [name=" + name + ", parent=" + parent + "]";
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -104,4 +110,9 @@ public class Group {
     	this.lock.unlock();
     }
     
+    public void clear(){
+        for(Task task:this.tasks){
+            task.clear();
+        }
+    }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.paypal.litengine.BaseContext;
+import com.paypal.litengine.Status;
 import com.paypal.litengine.Tuple;
 
 public class Assemble extends BaseContext{
@@ -47,4 +48,14 @@ public class Assemble extends BaseContext{
 	public Tuple getFinalOutput() {
 		return new TupleImpl(end.getOutputFields(),end.getOutput());
 	}
+
+    @Override
+    public Status getStatus() {
+        return null;
+    } 
+
+    @Override
+    public void setStatus(Status status) {
+        
+    }
 }

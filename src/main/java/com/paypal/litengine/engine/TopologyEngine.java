@@ -16,15 +16,16 @@ import org.slf4j.LoggerFactory;
 
 import com.paypal.litengine.BaseEngine;
 import com.paypal.litengine.Processor;
+import com.paypal.litengine.Status;
 import com.paypal.litengine.topo.Group;
 
 public class TopologyEngine extends BaseEngine<TopoContext> {
 	
 	final Logger logger = LoggerFactory.getLogger(TopologyEngine.class);
 
-    ThreadPoolExecutor processorExecutor = new ThreadPoolExecutor(100, 100, 100, TimeUnit.MILLISECONDS,
+    ThreadPoolExecutor processorExecutor = new ThreadPoolExecutor(80, 600, 0, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
-    ThreadPoolExecutor subProcessorExecutor = new ThreadPoolExecutor(50, 50, 50, TimeUnit.MILLISECONDS,
+    ThreadPoolExecutor subProcessorExecutor = new ThreadPoolExecutor(80, 600, 0, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
 
     @Override
@@ -38,19 +39,28 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
         if(Status.READY == context.getStatus())
             context.setStatus(Status.RUNNING);
         //execution finished
-        if(context.isDone()){ 
+        if(context.isDone()||context.isTimeout()){ 
             if(logger.isDebugEnabled())
                 logger.debug("context done === current thread:{}",Thread.currentThread().getName());
         	context.setStatus(Status.DONE);
         	context.unlock();
             return;
         }
+       
         while(!once&&canRuns.size()==0){
+            if(context.isDone()||context.isTimeout()){
+                logger.debug("context done === current thread:{}",Thread.currentThread().getName());
+                context.setStatus(Status.DONE);
+                context.unlock();
+                return;
+            }
             canRuns = context.getCanRunGroups();
         }
+        
+        final List<Group> clonedCanRuns=new ArrayList(canRuns);
         context.unlock();
-        Map<Group,OutputFieldsDeclarer> filedMapping= new HashMap<Group,OutputFieldsDeclarer>();
-        Map<Group,List<Future>> futureMapping= new HashMap<Group,List<Future>>();
+        final Map<Group,OutputFieldsDeclarer> filedMapping= new HashMap<Group,OutputFieldsDeclarer>();
+        final Map<Group,List<Future>> futureMapping= new HashMap<Group,List<Future>>();
         
         for(Group group: canRuns) {
             group.lock();
@@ -70,40 +80,44 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
             group.unlock();
            
             subProcessorExecutor.execute(new Runnable(){
-
                 @Override
                 public void run() {
                     execute(context,true);
                 }
         });
         }
-        
-        for(Group group: canRuns){
-            Values outputs = new Values();
-            OutputFieldsDeclarer declarer =filedMapping.get(group);
-            List<Future> futures=futureMapping.get(group);
-            if(futures.size() > 0) {
-                for(Future<?> future: futures) {
-                    try {
-                    	Values values=(Values)future.get();
-                    	if(values!=null){
-                    		outputs.addAll(values);
-                    	}
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+        context.lock();
+       
+        subProcessorExecutor.execute(new Runnable(){ 
+            @Override
+            public void run() {
+                for(Group group: clonedCanRuns){
+                    Values outputs = new Values();
+                    OutputFieldsDeclarer declarer =filedMapping.get(group);
+                    List<Future> futures=futureMapping.get(group);
+                    if(futures.size() > 0) {
+                        for(Future<?> future: futures) {
+                            try {
+                                Values values=(Values)future.get();
+                                if(values!=null){
+                                    outputs.addAll(values);
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    List<Group> kids = context.getChildren(group);
+                    for(Group kid: kids) {
+                        context.addInputMapping(group,kid, new TupleImpl(declarer.getFieldsDeclaration(), outputs));
                     }
                 }
             }
-
-            List<Group> kids = context.getChildren(group);
-            for(Group kid: kids) {
-                context.addInputMapping(group,kid, new TupleImpl(declarer.getFieldsDeclaration(), outputs));
-            }
-        }
+    });
+        context.unlock();
         if(!once)
             execute(context);
     }
@@ -124,6 +138,10 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
 
         @Override
         public Object call() throws Exception {
+            if(context.isTimeout()){
+                logger.debug("timeout-------->{}",group.getName());
+                return null;
+            }
             logger.debug("start to run group-------------------->{}",group.getName());
             Processor processor = this.task.getProcessor();
             if(processor!=null){
@@ -133,7 +151,6 @@ public class TopologyEngine extends BaseEngine<TopoContext> {
             	logger.debug("try to mark done processor:"+this.task.getProcessor());
             }
             context.markDone(group, task);
-            // execute(context);
             logger.debug("end to run group-------------------->{}",group.getName());
             return this.task.getOutput();
         }

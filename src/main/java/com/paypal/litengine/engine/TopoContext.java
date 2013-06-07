@@ -8,6 +8,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.paypal.litengine.BaseContext;
+import com.paypal.litengine.Status;
 import com.paypal.litengine.Tuple;
 import com.paypal.litengine.topo.Group;
 import com.paypal.litengine.topo.Topology;
@@ -16,7 +17,7 @@ import com.paypal.litengine.topo.config.Config;
 
 public class TopoContext extends BaseContext {
 
-	Status status = Status.READY;
+    private volatile Status status = Status.READY;
 	Topology topology;
 	private volatile List<Group> doneGroups = new ArrayList<Group>();
 	private volatile Map<Group, List<Task>> doneGroupsMapping = new HashMap<Group, List<Task>>();
@@ -27,6 +28,10 @@ public class TopoContext extends BaseContext {
 	public TopoContext(Topology topology) {
 		super();
 		this.topology = topology;
+		//clear task references to make sure the correct final output
+		for(Group group:topology.getAll()){
+		    group.clear();
+		}
 	}
 
 	public TopoContext(Config config) {
@@ -161,8 +166,13 @@ public class TopoContext extends BaseContext {
 	public boolean isDone() {
 		if (Status.DONE == this.status)
 			return true;
-		return this.getCanRunGroups().size() == 0
-				&& (this.doneGroups.size() == this.topology.getAll().size());
+		//System.out.println("doneGroups:"+doneGroups);
+		return this.doneGroups.size() == this.topology.getAll().size();
+		
+	}
+	
+	public boolean isTimeout(){
+	    return Status.TIME_OUT==this.status;
 	}
 
 	@Override
@@ -188,7 +198,7 @@ public class TopoContext extends BaseContext {
 	 */
 	@Override
 	public Tuple getFinalOutput() {
-		if (this.status != Status.DONE)
+		if (Status.DONE!=this.status && Status.TIME_OUT!=this.status)
 			return null;
 		List<Group> all = this.topology.getAll();
 		List<Group> nonleaf = this.topology.getNonleaf();
@@ -202,8 +212,11 @@ public class TopoContext extends BaseContext {
 		Values values = new Values();
 		for (Group g : leaf) {
 			for (Task task : g.getTasks()) {
-				fields.add(task.getOutputFields(),g.getName());
-				values.add(task.getOutput());
+			    Fields outputFields = task.getOutputFields();
+                if(outputFields!=null){
+			        fields.add(outputFields,g.getName());
+			        values.add(task.getOutput());
+			    }
 			}
 		}
 

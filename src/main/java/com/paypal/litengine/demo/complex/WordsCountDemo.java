@@ -2,6 +2,9 @@ package com.paypal.litengine.demo.complex;
 
 import java.util.concurrent.ExecutionException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.paypal.litengine.Engine;
 import com.paypal.litengine.Tuple;
 import com.paypal.litengine.engine.Task;
@@ -9,8 +12,6 @@ import com.paypal.litengine.engine.TopoContext;
 import com.paypal.litengine.engine.TopologyEngine;
 import com.paypal.litengine.topo.Topology;
 import com.paypal.litengine.topo.TopologyBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  *  this demo create a workflow like this
  *  <pre>
@@ -46,6 +47,7 @@ public class WordsCountDemo {
      * @throws InterruptedException
      */
     public static void main(String[] args) throws InterruptedException, ExecutionException {
+        long start=System.currentTimeMillis();
         TopologyBuilder builder = new TopologyBuilder();
         builder.addTask("root", new Task().setProcessor(new GenerateDataProcessor()));
         builder.addTask("group1", new Task().setProcessor(new AppendStringProcessor())).wait("root");
@@ -59,12 +61,12 @@ public class WordsCountDemo {
         logger.debug("##############################end##########################");
         for(String o:output) 
         	logger.debug(o+":"+output.getValueByField(o));
-        
+        logger.debug("{}-{} time consumed:{}",Thread.currentThread().getName(),Thread.currentThread().getId(),System.currentTimeMillis()-start);
         //you can execute the flow twice with the same result!
-        output=engine.trigger(new TopoContext(topo), null);
+        /*output=engine.trigger(new TopoContext(topo), null,2000);
         logger.debug("##############################end##########################");
         for(String o:output) 
-        	logger.debug(o+":"+output.getValueByField(o));
+        	logger.debug(o+":"+output.getValueByField(o));*/
         
     }
 

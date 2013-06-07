@@ -53,7 +53,7 @@ public class WordsCountDemoAnno2 {
      * @throws InterruptedException
      */
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        
+        long start=System.currentTimeMillis();
         Engine<TopoContext> engine = new TopologyEngine();
         Tuple output=engine.trigger(new TopoContext(new Config(){
 
@@ -64,13 +64,16 @@ public class WordsCountDemoAnno2 {
 				GenerateDataProcessor.class,
 				AppendStringProcessor.class,
 				PassdownProcessor2.class,
+				PassdownProcessor2g5.class,
 				PassdownWithSleepProcessor2.class);
 			}
         	
-        }), null);
+        }), null,3400);
         logger.debug("##############################end##########################");
+        if(output!=null)
         for(String o:output) 
-        	logger.debug(o+":"+output.getValueByField(o));
+        	logger.debug("final output is:"+o+":"+output.getValueByField(o));
+        logger.debug("{}-{} time consumed:{}",Thread.currentThread().getName(),Thread.currentThread().getId(),System.currentTimeMillis()-start); 
     }
 
 }

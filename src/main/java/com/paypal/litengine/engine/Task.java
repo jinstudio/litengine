@@ -65,4 +65,10 @@ public class Task {
         return this;
     }
     
+    public void clear(){
+        this.outputFields=null;
+        this.output=null;
+        this.input=null;
+    }
+    
 }
