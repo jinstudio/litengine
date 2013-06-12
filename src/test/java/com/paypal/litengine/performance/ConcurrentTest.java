@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.paypal.litengine.demo.complex.WordsCountDemo;
 
 public class ConcurrentTest {
-
+ 
     private static final int NUMBER = 90;
     static final Logger logger = LoggerFactory.getLogger(ConcurrentTest.class);
 
@@ -24,7 +24,7 @@ public class ConcurrentTest {
         long start=System.currentTimeMillis();
         for (int i = 0; i < NUMBER; ++i) // create and start threads
           new Thread(new Worker(startSignal, doneSignal){
-
+        	  
             @Override
             void doWork() {
                 { 

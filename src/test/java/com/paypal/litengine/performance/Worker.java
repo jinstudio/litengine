@@ -7,7 +7,7 @@ abstract class Worker implements Runnable {
     private final CountDownLatch doneSignal;
     Worker(CountDownLatch startSignal, CountDownLatch doneSignal) {
        this.startSignal = startSignal;
-       this.doneSignal = doneSignal;
+       this.doneSignal = doneSignal; 
     }
     public void run() {
        try {

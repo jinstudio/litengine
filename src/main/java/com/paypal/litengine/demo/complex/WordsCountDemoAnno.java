@@ -9,7 +9,9 @@ import com.paypal.litengine.Tuple;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.TopoContext;
 import com.paypal.litengine.engine.TopologyEngine;
+import com.paypal.litengine.topo.config.AnnoConfig;
 import com.paypal.litengine.topo.config.Config;
+import com.paypal.litengine.topo.config.Descriptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,26 +49,16 @@ public class WordsCountDemoAnno {
      * @throws ExecutionException
      * @throws InterruptedException
      */
+	
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         
         Engine<TopoContext> engine = new TopologyEngine();
-        Tuple output=engine.trigger(new TopoContext(new Config(){
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public List<Class<? extends TaskProcessor>> processors() {
-				return Arrays.asList(
-				GenerateDataProcessor.class,
-				AppendStringProcessor.class,
-				PassdownProcessor.class,
-				PassdownWithSleepProcessor.class,
-				CountLengthProcessor.class);
-			}
-        	
-        }), null);
+        Tuple output=engine.trigger(new TopoContext(
+        		new DemoConfig()), null);
         logger.info("##############################end##########################");
         for(String o:output) 
         	logger.info(o+":"+output.getValueByField(o));
     }
-
+    
 }
+

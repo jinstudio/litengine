@@ -1,6 +1,7 @@
 package com.paypal.litengine.engine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import com.paypal.litengine.topo.Group;
 import com.paypal.litengine.topo.Topology;
 import com.paypal.litengine.topo.TopologyBuilder;
 import com.paypal.litengine.topo.config.Config;
+import com.paypal.litengine.topo.config.Descriptor;
 
 public class TopoContext extends BaseContext {
 
@@ -37,21 +39,32 @@ public class TopoContext extends BaseContext {
 	public TopoContext(Config config) {
 		super();
 		TopologyBuilder builder = new TopologyBuilder();
-		for (Class<? extends TaskProcessor> cls : config.processors()) {
-			com.paypal.litengine.topo.config.Groups groups = cls
-					.getAnnotation(com.paypal.litengine.topo.config.Groups.class);
-			
-			com.paypal.litengine.topo.config.Group group1 = cls
-					.getAnnotation(com.paypal.litengine.topo.config.Group.class);
-			
-			if (groups != null) {
-				for (com.paypal.litengine.topo.config.Group group : groups
-						.group()) {
-					fromConfigGroup(builder, cls, group);
+		List<Class<? extends TaskProcessor>> processors=null;
+		if(config.getClass().isAnnotationPresent(Descriptor.class)){
+			Descriptor des=config.getClass().getAnnotation(Descriptor.class);
+			processors=Arrays.asList(des.value());
+		}
+		else {
+			processors=config.processors();
+		}
+		
+		if(processors!=null) {
+			for (Class<? extends TaskProcessor> cls : processors) {
+				com.paypal.litengine.topo.config.Groups groups = cls
+						.getAnnotation(com.paypal.litengine.topo.config.Groups.class);
+				
+				com.paypal.litengine.topo.config.Group group1 = cls
+						.getAnnotation(com.paypal.litengine.topo.config.Group.class);
+				
+				if (groups != null) {
+					for (com.paypal.litengine.topo.config.Group group : groups
+							.group()) {
+						fromConfigGroup(builder, cls, group);
+					}
 				}
-			}
-			if(group1!=null){
-				fromConfigGroup(builder,cls,group1);
+				if(group1!=null){
+					fromConfigGroup(builder,cls,group1);
+				}
 			}
 		}
 		Topology topo = builder.createTopology();
@@ -155,7 +168,7 @@ public class TopoContext extends BaseContext {
 		return getCanRunGroups().contains(group);
 	}
 
-	public Status getStatus() {
+	public Status getStatus() { 
 		return status;
 	}
 
