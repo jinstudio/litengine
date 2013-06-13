@@ -1,4 +1,4 @@
-This is a lite workflow engine
+This is a lite workflow engine<br>
 lite means it's easy to use, you feel the framework is lite, but the framework is powerful, <br>
 for simple case you can use <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/engine/SimpleEngine.java">SimpleEngine</a>,
 for complex case, you can use <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/engine/TopologyEngine.java">TopoEngine</a>.<br>
@@ -38,22 +38,23 @@ the workflow is created using the streaming api, like this
 </pre>                        
 also, you can check <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/demo/complex/WordsCountDemoAnno.java">WordsCountDemoAnno</a> to create the previous workflow with annotation,then code of creating workflow will be like this:
 <pre>
- Tuple output=engine.trigger(new TopoContext(new Config(){
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public List<Class<? extends TaskProcessor>> processors() {
-				return Arrays.asList(
-				GenerateDataProcessor.class,
-				AppendStringProcessor.class,
-				PassdownProcessor.class,
-				PassdownWithSleepProcessor.class,
-				CountLengthProcessor.class);
-			}
-        	
-        }), null);
+ Tuple output=engine.trigger(new TopoContext(new DemoAnnoConfig()), null);
 </pre>
-
+and <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/demo/complex/DemoAnnoConfig.java">DemoAnnoConfig</a> is:
+<pre>
+	 @Descriptor({
+		GenerateDataProcessor.class,
+		AppendStringProcessor.class,
+		PassdownProcessor2.class, 
+		PassdownWithSleepProcessor.class,  
+		CountLengthProcessor.class
+	})  
+	public class DemoAnnoConfig extends AnnoConfig{
+		 
+	}
+</pre>
+you can use a <a href="https://github.com/jinstudio/litengine/tree/master/tool">workflow diagram plugin</a> to view the workflow diagram based on this annotation
+<br>
 you can check <a href="https://github.com/jinstudio/litengine/blob/master/src/main/java/com/paypal/litengine/demo/complex/WordsCountDemoWithMultipleDS.java">WordsCountDemoWithMultipleDS</a> to create the following style workflow,
  <pre>
                 +-----------+  +-----------+ 

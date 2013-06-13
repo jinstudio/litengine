@@ -5,12 +5,19 @@ import com.paypal.litengine.engine.Fields;
 import com.paypal.litengine.engine.TaskProcessor;
 import com.paypal.litengine.engine.Values;
 import com.paypal.litengine.topo.config.Group;
-
-@Group(name="group5", waits={"group2"})
+import com.paypal.litengine.topo.config.Groups;
+@Groups(group={@Group(name="group5", waits={"group2"})
+        })
 public class PassdownProcessor2g5 extends TaskProcessor {
 
 	@Override
 	public Values doProcess(Tuple input) {
+	    try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	    logger.debug("********:"+input);
 		if (input.getValue(0) instanceof Values)
 			return (Values) input.getValue(0);

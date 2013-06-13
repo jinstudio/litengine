@@ -46,7 +46,7 @@
         </encoder>
     </appender>
 
-  <logger name="com.paypal" level="info" additivity="false">
+  <logger name="com.paypal" level="debug" additivity="false">
       <appender-ref ref="STDOUT" />
   </logger>	
   <root level="debug">
